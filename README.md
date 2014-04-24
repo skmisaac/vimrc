@@ -11,7 +11,7 @@ see the "USEFUL SHORTCUTS" section in vimrc to learn my shortcuts.
 PLUGINS
 -------
 
-* [Vundle](http://www.vim.org/scripts/script.php?script_id=3458): A Vim Package Management Tool
+* [Vundle](http://www.vim.org/scripts/script.php?script_id=3458): A Powerful Vim Package Management Tool
 
 * [Nerd Tree](http://www.vim.org/scripts/script.php?script_id=1658): A tree explorer plugin for navigating the filesystem.
 
@@ -28,27 +28,14 @@ PLUGINS
 * [xmledit](http://www.vim.org/scripts/script.php?script_id=301): XML/HTML tags will be completed automatically.
 
 * [ctrl-p](http://www.vim.org/scripts/script.php?script_id=3736): Fuzzy file search Plugin
+
+* [ultisnips](https://github.com/sirver/ultisnips) Powerful Python-based snippets engine
   
-* [SuperTab](http://www.vim.org/scripts/script.php?script_id=1643): Do all your insert-mode completion with Tab.
-
-* [snipMate](http://www.vim.org/scripts/script.php?script_id=2540): TextMate-style snippets for Vim
-
-  `:help snipMate` to see more info.
-
-* [YankRing](http://www.vim.org/scripts/script.php?script_id=1234): Maintains a history of previous yanks, changes and deletes 
-  
-  `:help yankring` to see more info.
+* [YouCompleteMe](https://github.com/Valloric/YouCompleteMe) Useful AutoComplete Engine with C-Family semantic checking 
 
 * [VisIncr](http://www.vim.org/scripts/script.php?script_id=670): Produce increasing/decreasing columns of numbers, dates, or daynames.
   
-* [Cute Error Marker](http://www.vim.org/scripts/script.php?script_id=2653): showing error and warning icons on line.
-  
-   MacVim users need to enable "Use experimental renderer" to see
-   graphical icons.
-
 * [vim-latex](http://vim-latex.sourceforge.net/): Latex support.
-
-* [OmniCppComplete](http://www.vim.org/scripts/script.php?script_id=1520): C/C++ omni-completion with ctags database.
 
 * [JavaComplete](http://www.vim.org/scripts/script.php?script_id=1785): Java Omni-completion.
 

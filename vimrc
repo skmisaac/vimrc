@@ -1,20 +1,9 @@
-" vgod's vimrc
+" skmisaac's vimrc <skm.isaac@gmail.com>
+" fork from vgod's vimrc
 " Tsung-Hsiang (Sean) Chang <vgod@vgod.tw>
-" Fork me on GITHUB  https://github.com/vgod/vimrc
+" GITHUB  https://github.com/vgod/vimrc
 
 " read https://github.com/vgod/vimrc/blob/master/README.md for more info
-
-
-" For pathogen.vim: auto load all plugins in .vim/bundle
-source ~/.vim/basic.vim
-
-let g:pathogen_disabled = []
-if !has('gui_running')
-   call add(g:pathogen_disabled, 'powerline')
-endif
-
-call pathogen#runtime_append_all_bundles()
-call pathogen#helptags()
 
 " General Settings
 
@@ -25,29 +14,92 @@ set ruler		" show the cursor position all the time
 set autoread		" auto read when file is changed from outside
 
 filetype off          " necessary to make ftdetect work on Linux
-syntax on
+
+" vundle setting up
+set rtp+=~/.vim/bundle/vundle/
+call vundle#rc()
+
+" Let Vundle manage Vundle, required
+Plugin 'gmarik/vundle'
+
+"--- Plugins
+
+"--- Syntax
+Plugin 'Shougo/unite.vim'
+Plugin 'jelera/vim-javascript-syntax'
+Plugin 'digitaltoad/vim-jade'
+Plugin 'tpope/vim-rake'
+Plugin 'tpope/vim-rails'
+Plugin 'moll/vim-node'
+Plugin 'scrooloose/syntastic'
+
+"--- API Checking
+Plugin 'rizzatti/funcoo.vim' " dependency of dash
+Plugin 'rizzatti/dash.vim'
+
+"--- File-ing
+Plugin 'vim-scripts/taglist.vim'
+Plugin 'majutsushi/tagbar'
+Plugin 'scrooloose/nerdtree'
+Plugin 'jistr/vim-nerdtree-tabs'
+Plugin 'kien/ctrlp.vim'
+Plugin 'MarcWeber/vim-addon-mw-utils'
+
+"--- Code Completion
+Plugin 'Valloric/YouCompleteMe'
+
+"--- Snippets
+Plugin 'sirver/ultisnips'
+"Plugin 'garbas/vim-snipmate'
+Plugin 'honza/vim-snippets'
+Plugin 'pangloss/vim-javascript'
+Plugin 'vim-scripts/VisIncr'
+Plugin 'mileszs/ack.vim'
+Plugin 'vim-scripts/javacomplete'
+Plugin 'vim-scripts/matchit.zip'
+Plugin 'vim-scripts/pythoncomplete'
+Plugin 'tomtom/tlib_vim'
+Plugin 'kchmck/vim-coffee-script'
+Plugin 'airblade/vim-gitgutter'
+Plugin 'sukima/xmledit'
+Plugin 'mattn/emmet-vim'
+
+"--- Utilities
+Plugin 'vgod/scala-vim-support'
+Plugin 'tpope/vim-surround'
+Plugin 'bling/vim-airline'
+"Plugin 'vim-scripts/YankRing.vim'
+Plugin 'scrooloose/nerdcommenter'
+Plugin 'Townk/vim-autoclose'
+Plugin 'vim-scripts/indent-motion'
+Plugin 'nathanaelkane/vim-indent-guides'
+Plugin 'Lokaltog/vim-easymotion'
+Plugin 'terryma/vim-multiple-cursors'
+
+"--- Themes
+Plugin 'flazz/vim-colorschemes'
+
+
 filetype on           " Enable filetype detection
 filetype indent on    " Enable filetype-specific indenting
 filetype plugin on    " Enable filetype-specific plugins
-
+syntax on	      " syntax highlight
+set hlsearch	      " search highlighting
 
 " auto reload vimrc when editing it
 autocmd! bufwritepost .vimrc source ~/.vimrc
-autocmd! bufwritepost basic.vim source ~/.vimrc
-
-syntax on		" syntax highlight
-set hlsearch		" search highlighting
 
 if has("gui_running")	" GUI color and font settings
   set guifont=Osaka-Mono:h16
   set background=dark 
-  set t_Co=256          " 256 color mode
+  "set t_Co=256          " 256 color mode
   set cursorline        " highlight current line
-  colors moria
   highlight CursorLine          guibg=#003853 ctermbg=24  gui=none cterm=none
+  colorscheme monokai
 else
 " terminal color settings
   colors vgod
+  "colors moria
 endif
 
 set clipboard=unnamed	" yank to the system register (*) by default
@@ -61,6 +113,7 @@ set wildignore=*.o,*.class,*.pyc
 
 set autoindent		" auto indentation
 set incsearch		" incremental search
+set noswapfile          " setting no *.swp files
 set nobackup		" no *~ backup files
 set copyindent		" copy the previous indentation on autoindenting
 set ignorecase		" ignore case when searching
@@ -73,20 +126,20 @@ set t_vb=
 set tm=500
 set so=7
 
-" TAB setting{
-   set expandtab        "replace <TAB> with spaces
-   set softtabstop=2 
-   set shiftwidth=2 
+" TAB setting {
+  set expandtab        "replace <TAB> with spaces
+  set softtabstop=2 
+  set shiftwidth=2 
 
-   au FileType Makefile set noexpandtab
+  au FileType Makefile set noexpandtab
 "}      							
 
 " status line {
 set laststatus=2
-set statusline=\ %{HasPaste()}%<%-15.25(%f%)%m%r%h\ %w\ \ 
-set statusline+=\ \ \ [%{&ff}/%Y] 
-set statusline+=\ \ \ %<%20.30(%{hostname()}:%{CurDir()}%)\ 
-set statusline+=%=%-10.(%l,%c%V%)\ %p%%/%L
+" set statusline=\ %{HasPaste()}%<%-15.25(%f%)%m%r%h\ %w\ \ 
+" set statusline+=\ \ \ [%{&ff}/%Y] 
+" set statusline+=\ \ \ %<%20.30(%{hostname()}:%{CurDir()}%)\ 
+" set statusline+=%=%-10.(%l,%c%V%)\ %p%%/%L
 
 function! CurDir()
     let curdir = substitute(getcwd(), $HOME, "~", "")
@@ -101,8 +154,38 @@ function! HasPaste()
     endif
 endfunction
 
-"}
+function! VisualSelection(direction, extra_filter) range
+    let l:saved_reg = @"
+    execute "normal! vgvy"
 
+    let l:pattern = escape(@", '\\/.*$^~[]')
+    let l:pattern = substitute(l:pattern, "\n$", "", "")
+
+    if a:direction == 'b'
+        execute "normal ?" . l:pattern . "^M"
+    elseif a:direction == 'gv'
+        call CmdLine("Ack \"" . l:pattern . "\" " )
+    elseif a:direction == 'replace'
+        call CmdLine("%s" . '/'. l:pattern . '/')
+    elseif a:direction == 'f'
+        execute "normal /" . l:pattern . "^M"
+    endif
+
+    let @/ = l:pattern
+    let @" = l:saved_reg
+endfunction
+
+function! s:setupMarkup()
+  nnoremap <leader>pr :silent !open -a Marked.app '%:p'<cr>
+endfunction
+
+au BufRead,BufNewFile *.{md,markdown,mdown,mkd,mkdn} call s:setupMarkup()
+
+" auto set filetype once loaded the files
+au BufNewFile,BufRead *.{htm,html} set filetype=html
+au BufNewFile,BufRead *.cpp set filetype=cpp
+au BufNewFile,BufRead *.js set filetype=javascript
+au BufNewFile,BufRead *.ruby set filetype=ruby
 
 " C/C++ specific settings
 autocmd FileType c,cpp,cc  set cindent comments=sr:/*,mb:*,el:*/,:// cino=>s,e0,n0,f0,{0,}0,^-1s,:0,=s,g0,h1s,p2,t0,+2,(2,)20,*30
@@ -128,8 +211,36 @@ endfun
 let mapleader=","
 let g:mapleader=","
 
+" skmisaac shortcuts
+
+" insert a space character in normal mode
+nmap <space> i <Esc>
+
+" map ,w to fast save
+nmap <leader>w :w<CR>
+
+" map ,q to :q
+nmap <leader>q :q<CR>
+nmap <leader>fq :q!<CR>
+
 " map jj to <esc>
 imap jj <Esc>
+
+" ,e for editing vimrc
+nmap <leader>e :e ~/.vimrc<CR>
+
+" CMD+/ to toggle commenter
+nmap <D-/> <Leader>c<space>
+vmap <D-/> <Leader>c<space>
+
+noremap <D-]> >>
+noremap <D-[> <<
+
+" NERDTree Toggle
+nmap <C-t><C-n> :NERDTreeToggle<CR>
+
+" map dash search
+nmap <leader>d <Plug>DashSearch
 
 " :W sudo saves the file 
 " (useful for handling the permission-denied error)
@@ -137,8 +248,8 @@ command! W w !sudo tee % > /dev/null
 
 " Visual mode pressing * or # searches for the current selection
 " Super useful! From an idea by Michael Naumann
-vnoremap <silent> * :call VisualSelection('f', '')<CR>
-vnoremap <silent> # :call VisualSelection('b', '')<CR>
+ vnoremap <silent> * :call VisualSelection('f', '')<CR>
+ vnoremap <silent> # :call VisualSelection('b', '')<CR>
 
 " Close the current buffer
 map <leader>bd :Bclose<cr>
@@ -157,34 +268,25 @@ map <leader>t<leader> :tabnext
 " Super useful when editing files in the same directory
 map <leader>te :tabedit <c-r>=expand("%:p:h")<cr>/
 
-" insert a space character in normal mode
-nmap <space> i <Esc>
-
-" map ,w to fast save
-nmap <leader>w :w<CR>
-
-" map ,q to :q
-nmap <leader>q :q<CR>
-
 "replace the current word in all opened buffers
 map <leader>r :call Replace()<CR>
 
 " open the error console
-map <leader>cc :botright cope<CR> 
+" map <leader>cc :botright cope<CR> 
 " move to next error
-map <leader>] :cn<CR>
+" map <leader>] :cn<CR>
 " move to the prev error
-map <leader>[ :cp<CR>
+" map <leader>[ :cp<CR>
 
 " --- move around splits {
 " move to and maximize the below split 
-map <C-J> <C-W>j<C-W>_
+map <C-j> <C-w>j<C-w>_<CR>
 " move to and maximize the above split 
-map <C-K> <C-W>k<C-W>_
+map <C-k> <C-w>k<C-w>_<CR>
 " move to and maximize the left split 
-nmap <c-h> <c-w>h<c-w><bar>
+nmap <c-h> <c-w>h<c-w><CR>
 " move to and maximize the right split  
-nmap <c-l> <c-w>l<c-w><bar>
+nmap <c-l> <c-w>l<c-w><CR>
 set wmw=0                     " set the min width of a window to 0 so we can maximize others 
 set wmh=0                     " set the min height of a window to 0 so we can maximize others
 " }
@@ -196,16 +298,8 @@ map <S-H> gT
 " go to next tab
 map <S-L> gt
 
-" new tab
-map <C-t><C-t> :tabnew<CR>
-" close tab
-map <C-t><C-w> :tabclose<CR> 
-
 " ,/ turn off search highlighting
 nmap <silent> <leader>/ :nohl<CR>
-
-" Dash doc search
-nmap <leader>s <Plug>DashSearch
 
 " Bash like keys for the command line
 cnoremap <C-A>      <Home>
@@ -213,7 +307,7 @@ cnoremap <C-E>      <End>
 cnoremap <C-K>      <C-U>
 
 " ,p toggles paste mode
-nmap <leader>p :set paste!<BAR>set paste?<CR>
+"nmap <leader>p :set paste!<BAR>set paste?<CR>
 
 " allow multiple indentation/deindentation in visual mode
 vnoremap < <gv
@@ -240,6 +334,25 @@ cmap cd. lcd %:p:h
    inoremap <C-u>5 <esc>yypVr^A
 "}
 
+if has("gui_macvim")
+  " Press Ctrl-Tab to switch between open tabs (like browser tabs) to 
+  " the right side. Ctrl-Shift-Tab goes the other way.
+  noremap <C-Tab> :tabnext<CR>
+  noremap <C-S-Tab> :tabprev<CR>
+
+" Meta+1-0 jumps to tab 1-10, Shift+Meta+1-0 jumps to tab 11-20:
+let s:windowmapnr = 0
+let s:wins='1234567890!@#$%^&*()'
+while (s:windowmapnr < strlen(s:wins))
+    exe 'noremap <silent> <D-' . s:wins[s:windowmapnr] . '> ' . (s:windowmapnr + 1) . 'gt'
+    exe 'inoremap <silent> <D-' . s:wins[s:windowmapnr] . '> <C-O>' . (s:windowmapnr + 1) . 'gt'
+    exe 'cnoremap <silent> <D-' . s:wins[s:windowmapnr] . '> <C-C>' . (s:windowmapnr + 1) . 'gt'
+    exe 'vnoremap <silent> <D-' . s:wins[s:windowmapnr] . '> <C-C>' . (s:windowmapnr + 1) . 'gt'
+    let s:windowmapnr += 1
+endwhile
+unlet s:windowmapnr s:wins
+endif
+
 "--------------------------------------------------------------------------- 
 " PROGRAMMING SHORTCUTS
 "--------------------------------------------------------------------------- 
@@ -258,15 +371,14 @@ fun! IncludeGuard()
 endfun
 
 
-
 " Enable omni completion. (Ctrl-X Ctrl-O)
-autocmd FileType html,markdown setlocal omnifunc=htmlcomplete#CompleteTags
-autocmd FileType javascript setlocal omnifunc=javascriptcomplete#CompleteJS
-autocmd FileType python setlocal omnifunc=pythoncomplete#Complete
-autocmd FileType xml setlocal omnifunc=xmlcomplete#CompleteTags
-autocmd FileType css set omnifunc=csscomplete#CompleteCSS
-autocmd FileType c set omnifunc=ccomplete#Complete
-autocmd FileType java set omnifunc=javacomplete#Complete
+"autocmd FileType html,markdown setlocal omnifunc=htmlcomplete#CompleteTags
+"autocmd FileType javascript setlocal omnifunc=javascriptcomplete#CompleteJS
+"autocmd FileType python setlocal omnifunc=pythoncomplete#Complete
+"autocmd FileType xml setlocal omnifunc=xmlcomplete#CompleteTags
+"autocmd FileType css set omnifunc=csscomplete#CompleteCSS
+"autocmd FileType c set omnifunc=ccomplete#Complete
+"autocmd FileType java set omnifunc=javacomplete#Complete
 
 " use syntax complete if nothing else available
 if has("autocmd") && exists("+omnifunc")
@@ -342,22 +454,14 @@ if !has("gui_running")
    nmap OD h
 endif
 
-
-
-" --- Command-T
-let g:CommandTMaxHeight = 15
-
-" --- SuperTab
-let g:SuperTabDefaultCompletionType = "context"
-let g:SuperTabCompletionContexts = ['s:ContextText', 's:ContextDiscover']
-let g:SuperTabContextDiscoverDiscovery = ["&completefunc:<c-x><c-u>", "&omnifunc:<c-x><c-o>"]
-
+" --- NERDTree
+let g:nerdtree_tabs_open_on_gui_startup = 0
+let g:nerdtree_tabs_open_on_new_tab = 0  
 
 " --- EasyMotion
-"let g:EasyMotion_leader_key = '<Leader>m' " default is <Leader>w
+"let g:EasyMotion_leader_key = '<leader>m' " default is <Leader>w
 hi link EasyMotionTarget ErrorMsg
 hi link EasyMotionShade  Comment
-
 
 " --- TagBar
 " toggle TagBar with F7
@@ -365,12 +469,8 @@ nnoremap <silent> <F7> :TagbarToggle<CR>
 " set focus to TagBar when opening it
 let g:tagbar_autofocus = 1
 
-" --- PowerLine
-" let g:Powerline_symbols = 'fancy' " require fontpatcher
-"
-
 " --- SnipMate
-let g:snipMateAllowMatchingDot = 0
+" let g:snipMateAllowMatchingDot = 0
 
 " --- coffee-script
 au BufWritePost *.coffee silent CoffeeMake! -b | cwindow | redraw! " recompile coffee scripts on write
@@ -378,3 +478,17 @@ au BufWritePost *.coffee silent CoffeeMake! -b | cwindow | redraw! " recompile c
 " --- vim-gitgutter
 let g:gitgutter_enabled = 1
 
+" --- vim-airline
+let g:airline#extensions#tabline#enabled = 0
+
+" --- YCM
+let g:ycm_global_ycm_extra_conf = '~/.ycm_extra_conf.py'                      
+
+" --- ultiSnips
+"  " Trigger configuration. Do not use <tab> if you use https://github.com/Valloric/YouCompleteMe.
+let g:UltiSnipsExpandTrigger="<s-space>"
+let g:UltiSnipsJumpForwardTrigger="<s-space>"
+let g:UltiSnipsJumpBackwardTrigger="<s-tab>"
+
+" If you want :UltiSnipsEdit to split your window.
+let g:UltiSnipsEditSplit="vertical"
