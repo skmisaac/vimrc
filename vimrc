@@ -79,7 +79,6 @@ Plugin 'terryma/vim-multiple-cursors'
 "--- Themes
 Plugin 'flazz/vim-colorschemes'
 
-
 filetype on           " Enable filetype detection
 filetype indent on    " Enable filetype-specific indenting
 filetype plugin on    " Enable filetype-specific plugins
@@ -98,7 +97,7 @@ if has("gui_running")	" GUI color and font settings
   colorscheme monokai
 else
 " terminal color settings
-  colors vgod
+  "colors vgod
   "colors moria
 endif
 
@@ -486,9 +485,9 @@ let g:ycm_global_ycm_extra_conf = '~/.ycm_extra_conf.py'
 
 " --- ultiSnips
 "  " Trigger configuration. Do not use <tab> if you use https://github.com/Valloric/YouCompleteMe.
-let g:UltiSnipsExpandTrigger="<s-space>"
-let g:UltiSnipsJumpForwardTrigger="<s-space>"
-let g:UltiSnipsJumpBackwardTrigger="<s-tab>"
+let g:UltiSnipsExpandTrigger="<c-h>"
+let g:UltiSnipsJumpForwardTrigger="<c-h>"
+let g:UltiSnipsJumpBackwardTrigger="<c-o>"
 
 " If you want :UltiSnipsEdit to split your window.
 let g:UltiSnipsEditSplit="vertical"
