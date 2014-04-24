@@ -217,6 +217,7 @@ nmap <space> i <Esc>
 
 " map ,w to fast save
 nmap <leader>w :w<CR>
+nmap <leader>wq :wq<CR>
 
 " map ,q to :q
 nmap <leader>q :q<CR>
@@ -487,7 +488,7 @@ let g:ycm_global_ycm_extra_conf = '~/.ycm_extra_conf.py'
 "  " Trigger configuration. Do not use <tab> if you use https://github.com/Valloric/YouCompleteMe.
 let g:UltiSnipsExpandTrigger="<c-h>"
 let g:UltiSnipsJumpForwardTrigger="<c-h>"
-let g:UltiSnipsJumpBackwardTrigger="<c-o>"
+let g:UltiSnipsJumpBackwardTrigger="<c-l>"
 
 " If you want :UltiSnipsEdit to split your window.
 let g:UltiSnipsEditSplit="vertical"
