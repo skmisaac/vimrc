@@ -23,9 +23,9 @@ call vundle#rc()
 Plugin 'gmarik/vundle'
 
 "--- Plugins
+Plugin 'tpope/vim-fugitive'
 
 "--- Syntax
-Plugin 'Shougo/unite.vim'
 Plugin 'jelera/vim-javascript-syntax'
 Plugin 'digitaltoad/vim-jade'
 Plugin 'tpope/vim-rake'
@@ -91,14 +91,15 @@ autocmd! bufwritepost .vimrc source ~/.vimrc
 if has("gui_running")	" GUI color and font settings
   set guifont=Osaka-Mono:h16
   set background=dark 
-  "set t_Co=256          " 256 color mode
+  set t_Co=256          " 256 color mode
   set cursorline        " highlight current line
   highlight CursorLine          guibg=#003853 ctermbg=24  gui=none cterm=none
   colorscheme monokai
 else
-" terminal color settings
-  "colors vgod
-  "colors moria
+  " terminal color settings
+  " colors vgod
+  " colors moria
+  set t_Co=16          " 16 color mode
 endif
 
 set clipboard=unnamed	" yank to the system register (*) by default
@@ -248,8 +249,8 @@ command! W w !sudo tee % > /dev/null
 
 " Visual mode pressing * or # searches for the current selection
 " Super useful! From an idea by Michael Naumann
- vnoremap <silent> * :call VisualSelection('f', '')<CR>
- vnoremap <silent> # :call VisualSelection('b', '')<CR>
+vnoremap <silent> * :call VisualSelection('f', '')<CR>
+vnoremap <silent> # :call VisualSelection('b', '')<CR>
 
 " Close the current buffer
 map <leader>bd :Bclose<cr>
@@ -280,9 +281,9 @@ map <leader>r :call Replace()<CR>
 
 " --- move around splits {
 " move to and maximize the below split 
-map <C-j> <C-w>j<C-w>_<CR>
+map <C-j> <C-w>j<C-w><CR>
 " move to and maximize the above split 
-map <C-k> <C-w>k<C-w>_<CR>
+map <C-k> <C-w>k<C-w><CR>
 " move to and maximize the left split 
 nmap <c-h> <c-w>h<c-w><CR>
 " move to and maximize the right split  
@@ -479,7 +480,36 @@ au BufWritePost *.coffee silent CoffeeMake! -b | cwindow | redraw! " recompile c
 let g:gitgutter_enabled = 1
 
 " --- vim-airline
+let g:airline_theme='zenburn'
+if !exists('g:airline_symbols')
+  let g:airline_symbols = {}
+
+endif
+
+" unicode symbols
+let g:airline_left_sep = '»'
+let g:airline_left_sep = '>'
+let g:airline_right_sep = '«'
+let g:airline_right_sep = '<'
+let g:airline_symbols.linenr = '␊'
+let g:airline_symbols.linenr = '␤'
+let g:airline_symbols.linenr = '¶'
+let g:airline_symbols.branch = '⎇'
+let g:airline_symbols.paste = 'ρ'
+let g:airline_symbols.paste = 'Þ'
+let g:airline_symbols.paste = '∥'
+let g:airline_symbols.whitespace = 'Ξ'
+
 let g:airline#extensions#tabline#enabled = 0
+
+let g:airline#extensions#branch#enabled = 1
+let g:airline#extensions#branch#empty_message = ''
+let g:airline#extensions#tabline#tab_nr_type = 1
+let g:airline#extensions#syntastic#enabled = 1
+let g:airline#extensions#tagbar#enabled = 1
+let g:airline#extensions#hunks#enabled = 1
+let g:airline#extensions#whitespace#enabled = 1
+let g:airline#extensions#eclim#enabled = 1
 
 " --- YCM
 let g:ycm_global_ycm_extra_conf = '~/.ycm_extra_conf.py'                      
